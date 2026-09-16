@@ -14,9 +14,9 @@
 
 | Projet | Description | Stack |
 |---|---|---|
-| [**EnderLauncher**](https://github.com/minoche95/EnderLauncher) | Launcher Minecraft moddé, construit sur Selvania Launcher. J'y ai ajouté le service qui distribue les fichiers du pack (nginx en conteneur, publié par un tunnel Cloudflare, sans port ouvert), un panneau web de gestion des mods accessible uniquement par tunnel SSH, et des versions publiées pour Windows, macOS et Linux avec mise à jour automatique. | Electron · Node.js · Python · nginx |
+| [**EnderLauncher**](https://github.com/mincho95/EnderLauncher) | Launcher Minecraft moddé, construit sur Selvania Launcher. J'y ai ajouté le service qui distribue les fichiers du pack (nginx en conteneur, publié par un tunnel Cloudflare, sans port ouvert), un panneau web de gestion des mods accessible uniquement par tunnel SSH, et des versions publiées pour Windows, macOS et Linux avec mise à jour automatique. | Electron · Node.js · Python · nginx |
 | [**Portfolio**](https://paul-fery.pages.dev) | Études de cas de mes projets, dont les deux applications en production. Site statique sans dépendance, CSP stricte, tests automatisés et intégration continue. | HTML · CSS · JS · Node.js |
-| [**La Malédiction de Drakthar**](https://github.com/minoche95/epic-digital-day) | Site de présentation d'un jeu de plateau à rôle caché, projet d'équipe de l'Epic Digital Day. | HTML · CSS |
+| [**La Malédiction de Drakthar**](https://github.com/mincho95/epic-digital-day) | Site de présentation d'un jeu de plateau à rôle caché, projet d'équipe de l'Epic Digital Day. | HTML · CSS |
 
 > Le code des applications en production appartient à l'entreprise et reste privé : leur architecture est détaillée sur [mon portfolio](https://paul-fery.pages.dev).
 
