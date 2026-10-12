@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+source-prepped.png
+avatar.png
+.DS_Store
+preview.html
