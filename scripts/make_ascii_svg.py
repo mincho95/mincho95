@@ -1,60 +1,42 @@
-"""Génère ascii-portrait.svg : contours ASCII de l'avatar, tracés ligne par ligne.
+"""Génère ascii-portrait.svg : portrait ASCII du trait, tracé ligne par ligne.
 
 Usage : python scripts/make_ascii_svg.py avatar.png
-On ne représente pas les tons mais les contours : filtre de Sobel sur l'image
-lissée, puis pour chaque cellule de caractère on garde l'orientation dominante
-du trait (tenseur de structure) et on l'écrit avec | - / \\. Les cellules sans
-contour restent vides, donc le sujet se détache du fond.
+L'avatar est un dessin au trait (encre noire sur papier blanc) : le contour,
+c'est l'encre. On épaissit donc le trait (filtre min), on réduit à 100 x 50
+cellules en moyennant, et la quantité d'encre de chaque cellule choisit le
+caractère. Papier = vide, encre = dense : le sujet se détache du fond.
 """
 import sys
 from pathlib import Path
 
 import numpy as np
-from numpy.lib.stride_tricks import sliding_window_view
-from PIL import Image, ImageFilter, ImageOps
+from PIL import Image, ImageOps, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
+RAMP = " .:-=+*#%@"  # papier (vide) -> encre (dense)
 COLS, ROWS = 100, 50
-CELL_W, CELL_H = 6, 12  # pixels d'image par caractère (rapport 1:2 d'une police mono)
-THRESHOLD = 0.2  # force moyenne du gradient sous laquelle la cellule reste vide
-BLUR = 1.3
+GAMMA = 0.7  # < 1 : remonte les traits fins, sinon ils s'effacent à la réduction
 W, H = 370, 430
 FONT = 5.8
 CHAR_W = W - 28
 ROW_H = 7.0
 TOP = 54
 
-SOBEL_X = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]], dtype=float)
 
-
-def convolve(a: np.ndarray, k: np.ndarray) -> np.ndarray:
-    return (sliding_window_view(np.pad(a, 1, mode="edge"), (3, 3)) * k).sum((-1, -2))
-
-
-def edge_rows(src: str) -> list[str]:
+def ink_rows(src: str) -> list[str]:
     img = ImageOps.autocontrast(Image.open(src).convert("L"), cutoff=1)
-    img = img.resize((COLS * CELL_W, ROWS * CELL_H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(BLUR))
-    a = np.asarray(img, dtype=float) / 255.0
-    gx, gy = convolve(a, SOBEL_X), convolve(a, SOBEL_X.T)
-    mag = np.hypot(gx, gy)
+    img = img.filter(ImageFilter.MinFilter(3))  # épaissit le trait avant réduction
+    img = img.resize((COLS, ROWS), Image.BOX)
+    ink = (1 - np.asarray(img, dtype=float) / 255.0) ** GAMMA
     rows = []
     for r in range(ROWS):
-        line = ""
-        for c in range(COLS):
-            sl = (slice(r * CELL_H, (r + 1) * CELL_H), slice(c * CELL_W, (c + 1) * CELL_W))
-            if mag[sl].mean() < THRESHOLD:
-                line += " "
-                continue
-            bx, by = gx[sl], gy[sl]
-            grad = 0.5 * np.arctan2(2 * (bx * by).sum(), (bx * bx).sum() - (by * by).sum())
-            t = (np.degrees(grad) + 90) % 180  # le trait est perpendiculaire au gradient
-            line += "-" if t < 22.5 or t >= 157.5 else "\\" if t < 67.5 else "|" if t < 112.5 else "/"
+        line = "".join(RAMP[int(v * (len(RAMP) - 1) + 0.5)] for v in ink[r])
         rows.append(line.rstrip() or " ")
     return rows
 
 
 def main(src: str) -> None:
-    rows = edge_rows(src)
+    rows = ink_rows(src)
     clips, texts = [], []
     for i, line in enumerate(rows):
         y = TOP + i * ROW_H
