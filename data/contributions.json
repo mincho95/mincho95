@@ -1,9 +1,9 @@
 {
  "user": "mincho95",
  "stats": {
-  "total": 121,
-  "current_streak": 41,
-  "longest_streak": 41,
+  "total": 126,
+  "current_streak": 42,
+  "longest_streak": 42,
   "best_day": {
    "date": "2026-11-13",
    "count": 19
@@ -21,7 +21,7 @@
    "2026-08": 0,
    "2026-09": 28,
    "2026-10": 28,
-   "2026-11": 47
+   "2026-11": 52
   }
  },
  "days": [
@@ -1847,6 +1847,11 @@
   },
   {
    "date": "2026-11-22",
+   "level": 4,
+   "count": 5
+  },
+  {
+   "date": "2026-11-23",
    "level": 0,
    "count": 0
   }
